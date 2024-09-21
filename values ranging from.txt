@@ -1,0 +1,39 @@
+void main() {
+  print(numberToWords(1000)); // 'one thousand'
+  print(numberToWords(4003)); // 'four thousand three'
+}
+
+String numberToWords(int num) {
+  if (num == 0) return 'zero';
+
+  List<String> units = [
+    '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 
+	'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+  ];
+  
+  List<String> tens = [
+    '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'
+  ];
+
+  String convertHundreds(int n) {
+    if (n < 20) return units[n];
+    if (n < 100) return tens[n ~/ 10] + (n % 10 != 0 ? ' ' + units[n % 10] : '');
+    return units[n ~/ 100] + ' hundred' + (n % 100 != 0 ? ' ' + convertHundreds(n % 100) : '');
+  }
+
+  String convert(int n, String suffix) {
+    if (n == 0) return '';
+    return convertHundreds(n) + ' ' + suffix;
+  }
+
+  String result = '';
+  result += convert(num ~/ 1000000, 'million');
+  num %= 1000000;
+
+  result += (result.isNotEmpty && num > 0 ? ' ' : '') + convert(num ~/ 1000, 'thousand');
+  num %= 1000;
+
+  result += (result.isNotEmpty && num > 0 ? ' ' : '') + convertHundreds(num);
+
+  return result.trim();
+}
